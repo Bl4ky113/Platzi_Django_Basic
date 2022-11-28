@@ -8,7 +8,12 @@ End:
 Sessions:
 1. 11/18/2022 16:09 - ...
 2. 11/20/2022 18:44 - ...
-3. 11/21/2022 17:13 - 
+3. 11/21/2022 17:13 - ...
+4. 11/22/2022 16:53 - 18:09
+5. 11/24/2022 14:36 - ...
+6. 11/26/2022 20:22 - 21:19
+7. 11/27/2022 18:26 - ...
+8. 11/28/2022 14:40 - 18:15
 
 ## Introducción
 
@@ -49,7 +54,7 @@ Vamos a crear un venv de Python, installar django y sus requirements con Pip y l
 
 Para hacer setup del proyecto, vamos a usar el cli django-admin así:
 
-$ django-admin startproject nombre_proyecto
+$ django-admin startproject nombre\_proyecto
 
 Esto nos creara una carpeta inicial con los archivos base de nuestro proyecto en Django.
 
@@ -60,21 +65,21 @@ proyecto de Django
 
 - .gitignore: 
     Lista de archivos que git va a ignorar.
-- carpeta_proyecto/:
+- carpeta\_proyecto/:
     Carpeta que contiene nuestro proyecto y sus archivos
 
 Hay una cosa rara con Django, y es que en la carpeta de nuestro proyecto, crea un modulo de python
 con el mismo nombre, puede ser confuso, pero meh.
 
-Dentro de carpeta_proyecto:
+Dentro de carpeta\_proyecto:
 - manage.py:
     Un script sencillo de python que nos permite ver y probar comando desde la terminal, donde 
     se ejecute el script.
-- Modulo_Proyecto:
+- Modulo\_Proyecto:
     Carpeta de un modulo del proyecto, que tiene el nombre de nuestro proyecto
 
-Dentro de Modulo_proyecto:
-- __init__.py
+Dentro de Modulo\_proyecto:
+- \_\_init\_\_.py
     El init del modulo
 - asgi.py y wsgi.py:
     Archivos para poder hacer un Deploy de nuestro proyecto
@@ -91,7 +96,7 @@ tener que tener un servidor corriendo Django para probar y hacer debugging.
 Además de agregarnos diferentes herramientas y cosas para que nosotros podamos hacer el desarrollo 
 de mejor forma.
 
-Para crear nuestro servidor de desarrollo, vamos a necesitar tener en nuestro proyecto_mod/settings.py 
+Para crear nuestro servidor de desarrollo, vamos a necesitar tener en nuestro proyecto\_mod/settings.py 
 tener nuestra variable DEBUG en True.
 Vamos a ejecutar manage.py mandando el argumento runserver
 
@@ -115,7 +120,7 @@ Platzi Awards va a ser nuestro Projecto. Y este va a tener de sistemas cómo el 
 En nuestro project, vamos a usar diferentes apps, una de estas va a ser Polls. Y podemos hacer que Django nos
 la creé usando manage.
 
-$ python manage.py startapp app_name
+$ python manage.py startapp app\_name
 
 Despues de esto, se creara el módulo, y App de Python, Django. 
 En los archivos creados, que vamos a ver a lo largo del curso. 
@@ -139,4 +144,187 @@ Importamos path de django.urls y importamos las views de nuestra app para conect
 en una lista urlparametters. Pero lo extra, es que en path podemos agregar un parametro name, para 
 ponerle nombre al path de la url de nuestra view.
 
-##
+## Investigación Settings.py
+
+En la clase cómo tal es bastante básica y vacia, solo nos explica 3:
+- TIME\_ZONE: Simplemente el Time zone en el que Django cree que esta. Se puede cambiar 
+    de UTC a el de nuestra ciudad u pais, pero toca buscarlo.
+- INSTALLED\_APPS: Las apps instaladas en nuestro projecto, aunque al parecer toca agregar 
+    las apps creadas por uno mismo como Polls
+- DATABASES: Es dict que parece lista, de DBs, generalmente solo se 
+    usan DBs relacionales con Django, y para usar No-Relacionales, toca 
+    hacer maromas u algo. Estas pueden tener diferentes formas de configuración
+    como tener usuario y password. La Default es SQLite3
+- MIDDLEWARE: Es simplemente un puente sencillo y muy rápido entre algunas apps y procesos de Django.
+
+### Tip manejar Middleware y Apps de Django
+Para hacer este proceso y instalación más sencillo, simplemente vamos a 
+quitar o renombrar INSTALLED\_APPS & MIDDLEWARE, a DJANGO\_APPS & DJANGO\_MIDDLEWARE.
+Esto para crear nuestras propios tuples con nuestras apps y middleware, o inclusive crear 
+una tercera lista para terceros. Y despues vamos a definir que INSTALLED\_APPS es igual a 
+la suma de todas las listas, lo mismo con el MIDDLEWARE.
+
+INSTALLED\_APPS = DJANGO\_APPS + LOCAL\_APPS + THIRD\_PARTY\_APPS
+
+Ya vere otras configs más adelante
+
+## Que es un ORM?
+
+Un Oject Relational Mapping es la forma en la que usando OOP vamos a crear una DB Relacional. 
+Estas principalmente se crean un sistema de relaciones de cada elemento de la DB con uno de OOP.
+- Tabla -> Script
+- Row -> Class 
+- Column -> Attribute
+
+Los objects creados se pueden pasar a la DB relacional sin problema.
+
+Podemos simplemente esquematizar las tablas de nuestra DB y por lo tanto las Classes que vamos a 
+crear. Simplemente hacemos una lista de los valores que se van a necesitar, y si necesitamos 
+podríamos hacer abstracción de nuestras tablas. Para evitar repetir espacios. 
+
+En el curso se recomienda tener dos tablas, una de preguntas y otra de respuestas para estas preguntas.
+Siendo 1:n respectivamente.
+
+Los datos de las tablas son:
+
+### Questions
+- ID
+- question
+- date
+
+### Answers
+- ID
+- Question\_ID
+- answer
+- answer\_count
+
+## Crear un ORM, Models y demás en Django.
+
+Vamos a ir a Models de nuestra app, polls en nuestro caso. Vamos 
+a crear un model con una class partiendo desde models.Models de django.db. 
+
+Y para definir los tipos de valores & columnas del Model, vamos a crear 
+atributos a nuestra clase. Usando como tipo de valores clases de valores 
+de nuestra DB, en este caso SQLite. Los cuales simplemente los podemos encontrar 
+en models cómo "tipo\_de\_dato"Field(), y podemos pasarle parametros para este valor, cómo
+largo máximo con str. O el mismo nombre del Field. Estos parametros nos pueden dar funcionalidades 
+más especificas, cómo el que hacer cuando se elimine una llave foranea de un elemento,
+
+Pero ahora que tenemos nuestros models, debemos simplemente hacer otros pasos que nos falto hacer.
+
+
+### Agregar una App a Django
+Hemos creado una app desde la terminal, le agregamos una view y ahora unos models para nuestra db. Pero 
+cómo tal Django no tiene agregada esta App, esto es bastante sencillo, simplemente podemos agregar nuestra
+app en la lista de INSTALLED\_APPS. Ya sea al inicio o al final, u usando la tecnica y truco anteriormente dicho.
+
+
+Listo, ahora vamos a usar el script manage.py para ejecutar 2 comandos:
+
+$ python3 manage.py makemigrations polls
+
+Lo primero que vamos a hacer acá es que Django va a tomar los models de nuestra app polls, y va a 
+crear un script en los cuales va a crear en la DB las tablas con las propiedades dadas por los Models.
+
+y
+
+$ python3 manage.py migrate
+
+Va a ejecutar en nuestra DB los scripts de migrations creados, esto principalmente para tener un registro 
+de lo realizado en la DB.
+
+Nos habra salido bien los comandos si, se crearon migraciones para Polls y al migrar estas se obtiene OK en todo
+
+## Consola de Django
+
+Como la consola interactiva de Python, la cual podemos ingresar usando $ python3. Podemos 
+ingresar y usar una terminal shell de nuestro proyecto en Django, usando:
+
+$ python3 manage.py shell
+
+Desde esta podemos interactuar con nuestro project de una forma más directa. Escencialmente 
+podemos mirar, hacer queries, crear datos y demas con los modelos en nuestra DB.
+Creo que es un poco más que obvio que podemos automatizar cada cosa que hagamos en la 
+consola usando código, solo sería ver donde y que implementar exactamente.
+
+Para hacer queries podemos importar los modelos de polls.models. Y usando un methodo static de 
+los modelos, objects, podemos hacer queries a la DB. El más sencillo, de todos los valores es 
+
+Model.objects.all() : Que trae todos los datos.
+
+Para guardar un dato, vamos a crear una instancia del Model. Y los valores de este los vamos a pasar cómo 
+un karg.
+
+Despues de esto, vamos a usar el metodo save() de la instancia para que los valores se guarden correctamente 
+en la DB.
+
+value = Model(value=value)
+value.save()
+
+Esta instancia vamos a poder acceder a sus valores, como si fueran atributos normales de una clase.
+Pero al momento de imprimirla con un print(). Nos va a salir el tipo de dato que es, el Model.
+Para arreglar esto parcialmente, podemos agregar un method \_\_str\_\_ a nuestro model. 
+Este simplemente va a retornar un string de lo que debería representar nuestro model, ejecutandose 
+cada vez que python necesite que estas instancias sean strings. Ya sea para imprimir.
+
+### Metodos Personalizados para Models
+Simplemente vamos a crear un method como si fuera una class normal de python.
+
+## Queries desde Consola
+
+Para hacer queries sencillos, podemos usar Model.objects.get(), este no lo 
+podemos usar cómo all(), ya que debe retornar solo un object. 
+Una forma sencilla es buscar usando primary keys, o "pk", 
+que practicamente van en orden ascendente desde 1 hasta el ultimo valor 
+de la db. 
+
+Se pueden hacer queries un poco más complejos usando operadores especiales de las 
+propiedades de nuestra DB, aunque ojo, al usar get(), puede que nos de error al 
+tener más de un object con las caracteristicas del query. 
+Estos operadores se aplican de una forma particular, se debe escribir un 
+downder y luego el operador, despues de escribir la propiedad a la que se le 
+va a aplicar. Ejemplo:
+
+publication\_day\_\_operador=rango\_valores\_operador
+
+Podemos obtener varios elementos en una lista usando Models.objects.filter()
+es básicamente el mismo proceso que .get()
+
+### Lista Operadores Query 
+- exact="": match exacto
+- iexact="": match exacto, con case sensitive
+- contains="": match
+- icontains="": match, ...
+- in=[], in="": check si esta en un iterable
+- gt=0: greater than
+- gte=0: greater equal
+- lt=0: less than
+- lte=0: less equal than
+- startswith="": match en el inicio
+- istartswith="": match ..., ...
+- endswith="": match en el final
+- iendswith="": ... ..., ...
+- Un tretamonton de operadores para fechas, horas y formatos de estas
+- regex="": regex
+- iregex="": ...
+- isnull=Bool: Mira si es null o no
+Se pueden combinar varios de estos operadores, sobretodo los de fecha con lo lógicos generales: gt lt.
+
+Ademas de estos operadores, si en nuestro modelo tenemos una foreign key. Podemos acceder a los valores
+de esos datos usando \_\_valor, y inclusive podemos agregarle a estos valores otros operadores, para 
+hacer queries.
+
+## Conjunto de Datos Relacionados
+
+Los Datos Relacionados son aquellos que se pueden expresar cómo relaciones de tablas, 1:1, 1:n, n:n*. 
+Estas relaciones generalmente se pueden acceder desde el modelo principal o que se vaya a usar, 
+usando el nombre del modelo relacionado, junto a \_set. Y desde ahí se pueden hacer diferentes cosas 
+en el modelo relacionado, cómo crear, buscar, eliminar, entre otros los datos.
+
+Acceder a estos datos puede ser más sencillo, en el momento de crear el dato de Foreing key en el Modelo Relacionado.
+Vamos a pasar un karg de related\_name="", donde vamos a pasar el nombre de la relación del modelo principal y el 
+relacionado. Esto para evitar usar siempre el model\_set que se genera automaticamente, y usar algo más descriptivo. 
+
+Además de lo methods ya vistos, podemos hacer un .count() para contar cuantos elementos relacionados 
+del Model Relacionado tenemos.
+

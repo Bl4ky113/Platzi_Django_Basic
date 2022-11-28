@@ -1,0 +1,14 @@
+#!/bin/bash
+
+# Export DJANGO_KEY
+echo 'Exporting Django Key'
+DJANGO_KEY=`./.get_key`
+export DJANGO_KEY
+
+# Start venv
+echo 'Starting Python venv'
+source ./venv/bin/activate
+
+# Start Server
+echo 'starting server'
+python3 ./platzi_awards/manage.py runserver
