@@ -6,14 +6,18 @@ Start: 11/18/2022
 End: 
 
 Sessions:
-1. 11/18/2022 16:09 - ...
-2. 11/20/2022 18:44 - ...
-3. 11/21/2022 17:13 - ...
-4. 11/22/2022 16:53 - 18:09
-5. 11/24/2022 14:36 - ...
-6. 11/26/2022 20:22 - 21:19
-7. 11/27/2022 18:26 - ...
-8. 11/28/2022 14:40 - 18:15
+01. 11/18/2022 16:09 - ...
+02. 11/20/2022 18:44 - ...
+03. 11/21/2022 17:13 - ...
+04. 11/22/2022 16:53 - 18:09
+05. 11/24/2022 14:36 - ...
+06. 11/26/2022 20:22 - 21:19
+07. 11/27/2022 18:26 - ...
+08. 11/28/2022 14:40 - 18:15
+09. 11/29/2022 12:30 - ...
+10. 12/01/2022 18:48 - ...
+11. 12/05/2022 15:31 - 22:20
+12. 12/06/2022 14:11 - 
 
 ## Introducción
 
@@ -328,3 +332,109 @@ relacionado. Esto para evitar usar siempre el model\_set que se genera automatic
 Además de lo methods ya vistos, podemos hacer un .count() para contar cuantos elementos relacionados 
 del Model Relacionado tenemos.
 
+## Django Admin
+
+Es un super usuario que nos va a poder permitir administrar datos de nuestra DB, 
+pero de una forma más visual y sencilla, que desde la terminal.
+Pero para esto se puede crear usando $ python3 manage.py createsuperuser.
+
+Donde simplemente nos va a pedir un nombre de usuario, email y contraseña. 
+Pero primero, para hacer funcional nuestro usuario admin, debemos primero registar 
+en nuestra app admin.py los Models que vayamos a usar.
+
+Esto simplemente se usa el modulo admin, propiedad site y method register, al cual 
+pasamos los modelos a usar. Los cuales deben ser importados.
+
+Ya despues de tener nuestro usuario, vamos a poder accederlo desde localhost:8000/admin/ 
+por default, puede cambiar si cambiamos el puerto o el url de admin que esta por default en urls.py 
+de la app de nuestro proyecto.
+
+Usandolo por un rato, parece ser solo una interfaz grafica para modificar y ver datos de los modelos del proyecto,
+que se hayan pasado al admin, ya que no todos los modelos estan por defecto. Solo los 
+que estan por defecto son los de Grupos y Usuarios en el project. 
+Se pueden dar permisos a grupos u usuarios, operaciones crud sencillas y demás.
+
+## MTV
+
+En Django se usa un sistema de MTV:
+- M: Models
+- T: Templates
+- V: Views
+
+Models, ya los hemos visto. Pero Templates y Views, solo superficie. 
+Las Views es la forma en la que se va a poder interactuar, tanto visual pasando 
+datos y demás cosas para visualizar, cómo recibir datos de un formulario.
+Las Templates, son la forma en la que las Views van a ser representadas, 
+generalmente cómo un archivo HTML5, con algunas adiciones de Django.
+
+Las views pueden ser dividas entre hechas por funciones o clases. 
+Funcion Based View y Generic View, respectivamente. Las diferencias 
+las veremos en otra clase.
+
+Esto es con MTV, haciendo que el Backend y el Frontend sean desarrollados por 
+las mismas personas o cómo minimo en el mismo framework, Django.
+Para usar otras formas de desarrollo Frontend, lo vamos a ver en el curso.
+
+## Agregar Views PT 2
+
+Para agregar Views, simplemente vamos a ir al archivo views.py de nuestra app. Crear la function o class de 
+la view, que siempre retorne un elemento, generalmente un httpresponce(). A
+
+Desde ahí vamos a importar el archivo de views a nuestro archivo de urls.py y vamos a agregar a la lista de 
+urlpatterns los paths de nuestras views.
+En el path podemos agregar variables atravez de nuestra url, al usar \<tipo_variable:nombre_variable\>. Generalmente
+solo se pueden usar int, y strs. Pero para usar estas variables, las vamos a tener que definir en nuestra function o class 
+view cómo un parametro, usando el mismo nombre que nombre_variable.
+
+## Templates en Django
+
+Las Templates son el Frontend que va a tener nuestras Views. Esto lo vamos a definir 
+en archivos separados en una carpeta llamada templates, una por app.
+Cómo es una carpeta por app, lo mejor es hacer un subfolder de nuestra app, aunque quede feo.
+Para evitar que al momento de que Django combine las templates, pueden haber errores de archivos 
+duplicados en diferentes apps.
+
+Resumido, mejor tener esta estructura:
+project/
+    app/
+        templates/
+            app/
+                template_1
+                templates...
+    app_2
+        templates/
+            app_2/
+                template_1
+
+Si no hubieramos tenido los templates_1 en diferentes carpetas dentro templates. Django hubiera dado error.
+
+Pero ya en la template que vayamos a usar, vamos a poder crear un archivo html normal, con 
+unos agregados:
+- Bloques de código {% %}
+- Inssert de Variable en el Html {{ }}
+
+Dentro de los Bloques de Código vamos a poder usar if, else, for y sus finalizadores endif-for
+Para agregar un sistema de lógica a nuestro template. Exactamente cómo si fuera una Jinja Template
+
+## Levantar Errores HTTP
+
+Podemos usar diferente metodos para levantar errores http en Django, pero uno util es cuando 
+necesitamos buscar algo en nuestra db y al no encontrarlo, devolver 404. Esto Django tiene un shotcut 
+integrado para evitar hacer toda una estructura de manejo del error al no encontrar el dato de la db.
+
+No, simplemente vamos a importar de django.shortcuts get_object_or_404 que literalmente hace lo que dice. Solo 
+necesita el modelo de la db a la cual se va a buscar y los kwargs del filter.
+
+## Evitar el Hard Coding de URLs
+
+El Hard Coding es la mala practica de hacer que nuestras URLS de nuestro project sean 
+siempre iguales frente una viriable, esto puede ser inocente al incio, ejemplo. 
+Simplemente nombrar el módulo polls/ y para cada view de nuestro modulo poner 
+polls al inicio. Esto esta bien hasta que polls cambia de nombre y se daña todo 
+el módulo.
+ 
+Para evitar esto simplemente vamos a usar en la jinja template, url 'nombre_modulo:nombre_view' parametros_url ...
+Pero ojo, el nombre lo tenemos que definir en urls de nuestro modulo cómo una vairable global que 
+Django va a leer llamada, app_name. Y los nombre views, van a ser los name="" que estan en el path de urlpatterns.
+
+Ojo que al parecer el name="" y el nombre de la view cómo tal pueden confundir al metodo de url.
