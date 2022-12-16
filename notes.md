@@ -17,7 +17,11 @@ Sessions:
 09. 11/29/2022 12:30 - ...
 10. 12/01/2022 18:48 - ...
 11. 12/05/2022 15:31 - 22:20
-12. 12/06/2022 14:11 - 
+12. 12/06/2022 14:11 - ...
+
+Me fuí a viajar, entonces obviamente no iba a estudiar
+13. 12/15/2022 19:13 - ...
+
 
 ## Introducción
 
@@ -438,3 +442,52 @@ Pero ojo, el nombre lo tenemos que definir en urls de nuestro modulo cómo una v
 Django va a leer llamada, app_name. Y los nombre views, van a ser los name="" que estan en el path de urlpatterns.
 
 Ojo que al parecer el name="" y el nombre de la view cómo tal pueden confundir al metodo de url.
+
+## Creando Forms
+
+Ahora que tenemos un buen conocimiento de Django, podemos usar buena parte de lo aprendido para aplicarlo a nuestro 
+Forms, que son la forma más básica para comunicar el frontend con el backend. 
+Vamos a poner en action, la url de question_vote pasando el question.id, con el method post. Vamos a usar el csrf token 
+para evitar que el form se envie multiple veces. Vamos a crear un fieldset con un legend cómo titulo nuestro el str de la 
+pregunta. Vamos a hacer un pequeño if, para pasar y mostrar errores con error_message. Despues vamos a crear un loop que 
+cree unos radio inputs que van a tener de nombre=choice, id=choice+num_choice, value=choice.id, y un label para cada input 
+del str del choice. Agregamos un submit btn fuera del fieldset y listo!
+
+## Verificar El Voto y contarlo
+
+Es bastante sencillo, simplemente vamos a obtener la pregunta usando el question_id, vamos a obtener el choice haciendo un 
+query a nuestra DB usando el choice_set del model de Questions, Mandamos un error si no se encuentra una choice valida o siquiera existente.
+Aumentamos en uno la cuenta de los votos de la choce, y guardamos con save(). Para despues redireccionar y retornar una respuesta Http a results 
+de nuestra pregunta, aunque eso es para otra clase.
+
+## Creando una view para ver los resultados
+
+Ahora simplemente sabiendo cómo hacer templates y views, vamos a enviar y usar question en nuestro template, hacer un for por cada opción de las 
+preguntas, y mostrar el número de votos. Agregando una función pipe a nuestro valor de votos, el cual nos va a permitir volver una 
+palabra plural, siempre que hayan más de 2 valores, sea un int o lista.
+
+{{ valor|pluralize }}
+
+Además de esto, simplemente estaríamos listos para seguir.
+
+## Generic Views
+
+Para evitar repetirnos una y otra vez con function views, vamos a simplemente crear una apartir de clases.
+De las cuales Django ya tiene varias a nuestra disposición. Podemos usarlas usando diferentes modulos del modulo views de django.
+La gran mayoria tienen unos methods que pueden ser utiles, pero se ven bastante genericos y modeables en una nueva iteración.
+
+Algunas que me llamarón la atención son:
+- Redirect View: Una view sencilla que va a redirigir a un method GET. 
+- Login View: Un fork de FormView que nos permite usar un Login
+- Template View: Una view base para enviar datos y valores a un template.
+- List View: Una view sencilla que simplemente muestra los datos de un iterable
+
+Pero ojo, no solo debemos elegir una sola, entre Function y Class based views.
+
+### Crear ClassViews
+Vamos a usar obviamente una Class, y debemos poner en el nombre Views al final, para que Django lo reconozca.
+Podemos usar diferentes valores cómo atributos. El proceso es un poco ambiguo, pero se supone que 
+debería funcionar seteando alguna que otra variable para nuestra view.
+
+Para enviar argumentos a travez de la URL es un poco más dificil, por ejemplo. Si vamos a usar una pk, debemos usar el nombre de esta
+en la def de la url.
