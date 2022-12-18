@@ -13,7 +13,7 @@ class Question (models.Model):
         return str(self.question_str)
 
     def was_published_recently (self):
-        return self.publication_date >= timezone.now() - datetime.timedelta(days=1)
+        return timezone.now() >= self.publication_date >= timezone.now() - datetime.timedelta(days=1)
 
 class Choice (models.Model):
     question_id = models.ForeignKey(Question, on_delete=models.CASCADE)

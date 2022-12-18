@@ -3,7 +3,7 @@
 Un curso nuevo, de Pe a Pa, desde hace tanto tiempo. Dios.
 
 Start: 11/18/2022
-End: 
+End: 12/15/2022
 
 Sessions:
 01. 11/18/2022 16:09 - ...
@@ -480,7 +480,8 @@ Algunas que me llamarón la atención son:
 - Redirect View: Una view sencilla que va a redirigir a un method GET. 
 - Login View: Un fork de FormView que nos permite usar un Login
 - Template View: Una view base para enviar datos y valores a un template.
-- List View: Una view sencilla que simplemente muestra los datos de un iterable
+- List View: Una view sencilla que simplemente muestra los datos de un iterable. Usa get_queryset para obtener los datos. Generalmente solo 
+    dandole el Model basta, pero podemos usar esto para hacer un filtro.
 
 Pero ojo, no solo debemos elegir una sola, entre Function y Class based views.
 
@@ -491,3 +492,5 @@ debería funcionar seteando alguna que otra variable para nuestra view.
 
 Para enviar argumentos a travez de la URL es un poco más dificil, por ejemplo. Si vamos a usar una pk, debemos usar el nombre de esta
 en la def de la url.
+
+Terminamos.
